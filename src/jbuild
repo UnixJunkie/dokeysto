@@ -3,8 +3,8 @@
 (library
  ((name        dokeysto)
   (public_name dokeysto)
-  (modules (db))
-  (libraries (unix lz4))))
+  (modules (db utls))
+  (libraries (unix extunix lz4))))
 
 (executable
   ((name test)
