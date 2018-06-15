@@ -32,11 +32,20 @@ module StrKeyToStrVal = struct
     let index_fn = fn ^ ".idx" in
     let data =
       Unix.(openfile data_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    (* we just check there is not already an index file *)
+    let index_file =
+      Unix.(openfile index_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    Unix.close index_file;
     let index = Ht.create 11 in
     { data_fn; index_fn; data; index }
 
+  let close db =
+    Unix.close db.data;
+    Utls.save db.index_fn db.index
+
   let sync db =
-    failwith "Db.sync: no Unix.sync in the stdlib?!"
+    (* no Unix.sync in the stdlib?! *)
+    failwith "not implemented yet"
 
   let open_rw fn =
     failwith "not implemented yet"
