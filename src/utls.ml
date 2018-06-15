@@ -11,3 +11,9 @@ let with_out_file (fn: filename) (f: out_channel -> 'a): 'a =
   let res = f output in
   close_out output;
   res
+
+(* marshal x to file *)
+let save fn x =
+  with_out_file fn (fun out ->
+      Marshal.to_channel out x [Marshal.No_sharing]
+    )
