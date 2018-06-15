@@ -18,10 +18,14 @@ let value_of_string (v_str: string): 'b =
 type position = { off: int;
                   len: int }
 
+type open_mode = Read_only
+               | Read_write
+
 type db = { data_fn: filename;
             index_fn: filename;
             data: Unix.file_descr;
-            index: (string, position) Hashtbl.t }
+            index: (string, position) Hashtbl.t;
+            mode: open_mode }
 
 module StrKeyToStrVal = struct
 
@@ -37,20 +41,34 @@ module StrKeyToStrVal = struct
       Unix.(openfile index_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
     Unix.close index_file;
     let index = Ht.create 11 in
-    { data_fn; index_fn; data; index }
+    let mode = Read_write in
+    { data_fn; index_fn; data; index; mode }
+
+  let open_rw fn =
+    let data_fn = fn in
+    let index_fn = fn ^ ".idx" in
+    let data =
+      Unix.(openfile data_fn [O_RDWR] 0o600) in
+    let index = Utls.restore index_fn in
+    let mode = Read_write in
+    { data_fn; index_fn; data; index; mode }
+
+  let open_ro fn =
+    let data_fn = fn in
+    let index_fn = fn ^ ".idx" in
+    let data =
+      Unix.(openfile data_fn [O_RDONLY] 0o600) in
+    let index = Utls.restore index_fn in
+    let mode = Read_only in
+    { data_fn; index_fn; data; index; mode }
 
   let close db =
     Unix.close db.data;
-    Utls.save db.index_fn db.index
+    if db.mode = Read_write then
+      Utls.save db.index_fn db.index
 
   let sync db =
     (* no Unix.sync in the stdlib?! *)
-    failwith "not implemented yet"
-
-  let open_rw fn =
-    failwith "not implemented yet"
-
-  let open_ro fn =
     failwith "not implemented yet"
 
   let close db =
