@@ -68,8 +68,11 @@ module StrKeyToStrVal = struct
       Utls.save db.index_fn db.index
 
   let sync db =
-    (* no Unix.sync in the stdlib?! *)
-    failwith "not implemented yet"
+    if db.mode = Read_write then
+      begin
+        ExtUnix.All.fsync db.data;
+        Utls.save db.index_fn db.index
+      end
 
   let close db =
     failwith "not implemented yet"
