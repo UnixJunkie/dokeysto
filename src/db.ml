@@ -90,7 +90,8 @@ module StrKeyToStrVal = struct
     failwith "not implemented yet"
 
   let remove db k =
-    failwith "not implemented yet"
+    (* we just remove it from the index, not from the data file *)
+    Ht.remove db.index k
 
   let find db k =
     failwith "not implemented yet"
