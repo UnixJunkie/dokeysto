@@ -74,17 +74,24 @@ module StrKeyToStrVal = struct
         Utls.save db.index_fn db.index
       end
 
-  let close db =
-    failwith "not implemented yet"
-
-  let destroy fn =
-    failwith "not implemented yet"
+  let destroy db =
+    if db.mode = Read_write then
+      begin
+        close db;
+        Sys.remove db.data_fn;
+        Sys.remove db.index_fn
+      end
 
   let mem db k =
-    failwith "not implemented yet"
+    Ht.mem db.index k
 
-  let add db k v =
-    failwith "not implemented yet"
+  let add db k str =
+    (* go to end of data file *)
+    let off = Unix.(lseek db.data 0 SEEK_END) in
+    let len = String.length str in
+    let written = Unix.write_substring db.data str 0 len in
+    assert(written = len);
+    Ht.add db.index k { off; len }
 
   let replace db k v =
     failwith "not implemented yet"
