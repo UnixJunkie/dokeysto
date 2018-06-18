@@ -114,36 +114,59 @@ module RW: sig
 
 end
 
-(*
-
 module RWZ: sig
 
   type t
 
-  val create fn =
+  (** [create fn] create in read-write mode the persistent
+      hashtbl whose data are stored compressed in file [fn] and whose
+      index is stored in [fn ^ ".idx"]. *)
+  val create: filename -> t
 
-  val open_existing fn =
+  (** [open_existing fn] open in read-write mode the persistent
+      hashtbl whose data are stored compressed in file [fn] and whose
+      index is stored in [fn ^ ".idx"]. *)
+  val open_existing: filename -> t
 
-  val close db =
+  (** [close db] close the previously opened [db]. *)
+  val close: t -> unit
 
-  val sync db =
+  (** [sync db] sync to disk the data and metadata (index) of [db]. *)
+  val sync: t -> unit
 
-  val destroy db =
+  (** [destroy db] rm data and metadata files of [db] and clear [db]'s
+      index hashtbl. *)
+  val destroy: t -> unit
 
-  val mem db k =
+  (** [mem db k] check if [k] is bound in [db]. *)
+  val mem: t -> string -> bool
 
-  val add db k str =
+  (** [add db k v] add the key-value binding [(k,v)] to [db].
+      [v] is compressed on the fly. *)
+  val add: t -> string -> string -> unit
 
-  val replace db k str =
+  (** [replace db k v] replace the current binding for [k] in [db]
+      by a binding from [k] to [v].
+      [v] is compressed on the fly.
+      Cf. Hashtbl.replace for details. *)
+  val replace: t -> string -> string -> unit
 
-  val remove db k =
+  (** [remove tbl k] remove the current binding for [k] in [db].
+      Cf. Hashtbl.replace for details. *)
+  val remove: t -> string -> unit
 
-  val find db k =
+  (** [find db k] get and uncompress the current binding of [k] in [db]
+      or raise [Not_found]. *)
+  val find: t -> string -> string
 
-  val iter f db =
+  (** [iter f db] apply [f] to all key-value pairs in [db].
+      Values are uncompressed on the fly.
+      Cf. Hashtbl.iter for details. *)
+  val iter: (string -> string -> unit) -> t -> unit
 
-  val fold f db init =
+  (** [fold f db init] fold [f] over all key-value pairs in [db].
+      Values are uncompressed on the fly.
+      Cf. Hashtbl.fold for details. *)
+  val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
 
 end
-
-*)
