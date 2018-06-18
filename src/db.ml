@@ -81,6 +81,18 @@ module Internal = struct
     assert(written = len);
     Ht.add db.index k { off; len }
 
+  let compress str =
+    Bytes.unsafe_to_string
+      (LZ4.Bytes.compress (Bytes.unsafe_of_string str))
+
+  let uncompress str =
+    let len = String.length str in
+    Bytes.unsafe_to_string
+      (LZ4.Bytes.decompress ~length:len (Bytes.unsafe_of_string str))
+
+  let add_z db k str =
+    add db k (compress str)
+
   let replace db k str =
     (* go to end of data file *)
     let off = Unix.(lseek db.data 0 SEEK_END) in
@@ -88,6 +100,9 @@ module Internal = struct
     let written = Unix.write_substring db.data str 0 len in
     assert(written = len);
     Ht.replace db.index k { off; len }
+
+  let replace_z db k str =
+    replace db k (compress str)
 
   let remove db k =
     (* we just remove it from the index, not from the data file *)
@@ -103,13 +118,25 @@ module Internal = struct
     assert(read = len);
     Bytes.unsafe_to_string buff
 
+  let retrieve_z db v_addr =
+    uncompress (retrieve db v_addr)
+
   let find db k =
     let v_addr = Ht.find db.index k in
     retrieve db v_addr
 
+  let find_z db k =
+    let v_addr = Ht.find db.index k in
+    retrieve_z db v_addr
+
   let iter f db =
     Ht.iter (fun k v ->
         f k (retrieve db v)
+      ) db.index
+
+  let iter_z f db =
+    Ht.iter (fun k v ->
+        f k (retrieve_z db v)
       ) db.index
 
   let fold f db init =
@@ -117,14 +144,10 @@ module Internal = struct
         f k (retrieve db v) acc
       ) db.index init
 
-  let compress str =
-    Bytes.unsafe_to_string
-      (LZ4.Bytes.compress (Bytes.unsafe_of_string str))
-
-  let uncompress str =
-    let len = String.length str in
-    Bytes.unsafe_to_string
-      (LZ4.Bytes.decompress ~length:len (Bytes.unsafe_of_string str))
+  let fold_z f db init =
+    Ht.fold (fun k v acc ->
+        f k (retrieve_z db v) acc
+      ) db.index init
 
 end
 
