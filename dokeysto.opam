@@ -7,7 +7,9 @@ bug-reports: "https://github.com/UnixJunkie/dokeysto/issues"
 dev-repo: "https://github.com/UnixJunkie/dokeysto.git"
 license: "LGPL-2.1"
 build: ["jbuilder" "build" "-p" name "-j" jobs]
+build-test: [make "test"]
 depends: [
   "jbuilder" {build}
-  "unix"
+  "extunix"
+  "lz4"
 ]
