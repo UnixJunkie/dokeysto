@@ -30,27 +30,40 @@ module RO: sig
 
 end
 
-(*
-
-module ROZ = sig
+module ROZ: sig
 
   type t
 
-  val open_existing fn =
+  (** [open_existing fn] open in read-only mode the persistent
+      hashtbl whose data are stored compressed in file [fn] and whose
+      index hashtbl is stored in [fn ^ ".idx"]. *)
+  val open_existing: filename -> t
 
-  val close db =
+  (** [close db] close the previously opened [db]. *)
+  val close: t -> unit
 
-  val mem db k =
+  (** [mem db k] check if [k] is bound in [db]. *)
+  val mem: t -> string -> bool
 
-  val find db k =
+  (** [find db k] get and uncompress the current binding of [k] in [db]
+      or raise [Not_found]. *)
+  val find: t -> string -> string
 
-  val iter f db =
+  (** [iter f db] apply [f] to all key-value pairs in [db].
+      Values are uncompressed on the fly.
+      Cf. Hashtbl.iter for details. *)
+  val iter: (string -> string -> unit) -> t -> unit
 
-  val fold f db init =
+  (** [fold f db init] fold [f] over all key-value pairs in [db].
+      Values are uncompressed on the fly.
+      Cf. Hashtbl.fold for details. *)
+  val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
 
 end
 
-module RW = sig
+(*
+
+module RW: sig
 
   type t
 
@@ -80,7 +93,7 @@ module RW = sig
 
 end
 
-module RWZ = sig
+module RWZ: sig
 
   type t
 
