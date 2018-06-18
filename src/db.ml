@@ -105,13 +105,28 @@ module StrKeyToStrVal = struct
     (* we just remove it from the index, not from the data file *)
     Ht.remove db.index k
 
+  let retrieve db v_addr =
+    let off = v_addr.off in
+    let len = v_addr.len in
+    let buff = Bytes.create len in
+    let off' = Unix.(lseek db.data off SEEK_SET) in
+    assert(off' = off);
+    let read = Unix.read db.data buff 0 len in
+    assert(read = len);
+    Bytes.unsafe_to_string buff
+
   let find db k =
-    failwith "not implemented yet"
+    let v_addr = Ht.find db.index k in
+    retrieve db v_addr
 
   let iter f db =
-    failwith "not implemented yet"
+    Ht.iter (fun k v ->
+        f k (retrieve db v)
+      ) db.index
 
   let fold f db init =
-    failwith "not implemented yet"
+    Ht.fold (fun k v acc ->
+        f k (retrieve db v) acc
+      ) db.index init
 
 end
