@@ -22,5 +22,6 @@ doc:
 	ocamldoc -html -d doc src/*.mli
 
 test:
+	\rm -f rwdb rwdbz rwdb.idx rwdbz.idx
 	jbuilder build _build/default/src/test.exe
 	_build/default/src/test.exe
