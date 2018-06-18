@@ -18,18 +18,12 @@ let value_of_string (v_str: string): 'b =
 type position = { off: int;
                   len: int }
 
-type open_mode = Read_only
-               | Read_write
-
 type db = { data_fn: filename;
             index_fn: filename;
             data: Unix.file_descr;
-            index: (string, position) Hashtbl.t;
-            mode: open_mode }
+            index: (string, position) Hashtbl.t }
 
-module StrKeyToStrVal = struct
-
-  type t = db
+module Internal = struct
 
   let create fn =
     let data_fn = fn in
@@ -41,8 +35,7 @@ module StrKeyToStrVal = struct
       Unix.(openfile index_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
     Unix.close index_file;
     let index = Ht.create 11 in
-    let mode = Read_write in
-    { data_fn; index_fn; data; index; mode }
+    { data_fn; index_fn; data; index }
 
   let open_rw fn =
     let data_fn = fn in
@@ -50,8 +43,7 @@ module StrKeyToStrVal = struct
     let data =
       Unix.(openfile data_fn [O_RDWR] 0o600) in
     let index = Utls.restore index_fn in
-    let mode = Read_write in
-    { data_fn; index_fn; data; index; mode }
+    { data_fn; index_fn; data; index }
 
   let open_ro fn =
     let data_fn = fn in
@@ -59,28 +51,23 @@ module StrKeyToStrVal = struct
     let data =
       Unix.(openfile data_fn [O_RDONLY] 0o600) in
     let index = Utls.restore index_fn in
-    let mode = Read_only in
-    { data_fn; index_fn; data; index; mode }
+    { data_fn; index_fn; data; index }
 
-  let close db =
+  let close_simple db =
+    Unix.close db.data
+
+  let close_sync_index db =
     Unix.close db.data;
-    if db.mode = Read_write then
-      Utls.save db.index_fn db.index
+    Utls.save db.index_fn db.index
 
   let sync db =
-    if db.mode = Read_write then
-      begin
-        ExtUnix.All.fsync db.data;
-        Utls.save db.index_fn db.index
-      end
+    ExtUnix.All.fsync db.data;
+    Utls.save db.index_fn db.index
 
   let destroy db =
-    if db.mode = Read_write then
-      begin
-        close db;
-        Sys.remove db.data_fn;
-        Sys.remove db.index_fn
-      end
+    Unix.close db.data;
+    Sys.remove db.data_fn;
+    Sys.remove db.index_fn
 
   let mem db k =
     Ht.mem db.index k
@@ -128,5 +115,27 @@ module StrKeyToStrVal = struct
     Ht.fold (fun k v acc ->
         f k (retrieve db v) acc
       ) db.index init
+
+end
+
+module RO = struct
+
+  let open_existing fn =
+    Internal.open_ro fn
+
+  let close db =
+    Internal.close_simple db
+
+  let mem db k =
+    Internal.mem db k
+
+  let find db k =
+    Internal.find db k
+
+  let iter f db =
+    Internal.iter f db
+
+  let fold f db init =
+    Internal.fold f db init
 
 end
