@@ -153,7 +153,7 @@ end
 
 module RO = struct
 
-  type t
+  type t = db
 
   let open_existing fn =
     Internal.open_ro fn
@@ -177,7 +177,7 @@ end
 
 module ROZ = struct
 
-  type t
+  type t = db
 
   let open_existing fn =
     RO.open_existing fn
@@ -201,7 +201,7 @@ end
 
 module RW = struct
 
-  type t
+  type t = db
 
   let create fn =
     Internal.create fn
@@ -243,7 +243,7 @@ end
 
 module RWZ = struct
 
-  type t
+  type t = db
 
   let create fn =
     RW.create fn
