@@ -1,6 +1,8 @@
 
 type filename = string
 
+(** {4 Read-only persistent string key to string value hash table} *)
+
 module RO: sig
 
   type t
@@ -29,6 +31,9 @@ module RO: sig
   val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
 
 end
+
+(** {4 Read-only persistent string key to string value hash table
+    (values are compressed on disk)} *)
 
 module ROZ: sig
 
@@ -60,6 +65,8 @@ module ROZ: sig
   val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
 
 end
+
+(** {4 Read-write persistent string key to string value hash table} *)
 
 module RW: sig
 
@@ -113,6 +120,9 @@ module RW: sig
   val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
 
 end
+
+(** {4 Read-write persistent string key to string value hash table
+    (values are compressed on disk)} *)
 
 module RWZ: sig
 
