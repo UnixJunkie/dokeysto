@@ -93,8 +93,13 @@ module StrKeyToStrVal = struct
     assert(written = len);
     Ht.add db.index k { off; len }
 
-  let replace db k v =
-    failwith "not implemented yet"
+  let replace db k str =
+    (* go to end of data file *)
+    let off = Unix.(lseek db.data 0 SEEK_END) in
+    let len = String.length str in
+    let written = Unix.write_substring db.data str 0 len in
+    assert(written = len);
+    Ht.replace db.index k { off; len }
 
   let remove db k =
     (* we just remove it from the index, not from the data file *)
