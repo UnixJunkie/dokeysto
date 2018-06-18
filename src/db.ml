@@ -65,6 +65,7 @@ module Internal = struct
     Utls.save db.index_fn db.index
 
   let destroy db =
+    Hashtbl.reset db.index;
     Unix.close db.data;
     Sys.remove db.data_fn;
     Sys.remove db.index_fn
@@ -116,6 +117,15 @@ module Internal = struct
         f k (retrieve db v) acc
       ) db.index init
 
+  let compress str =
+    Bytes.unsafe_to_string
+      (LZ4.Bytes.compress (Bytes.unsafe_of_string str))
+
+  let uncompress str =
+    let len = String.length str in
+    Bytes.unsafe_to_string
+      (LZ4.Bytes.decompress ~length:len (Bytes.unsafe_of_string str))
+
 end
 
 module RO = struct
@@ -128,6 +138,46 @@ module RO = struct
 
   let mem db k =
     Internal.mem db k
+
+  let find db k =
+    Internal.find db k
+
+  let iter f db =
+    Internal.iter f db
+
+  let fold f db init =
+    Internal.fold f db init
+
+end
+
+module RW = struct
+
+  let create fn =
+    Internal.create fn
+
+  let open_existing fn =
+    Internal.open_rw fn
+
+  let close db =
+    Internal.close_sync_index db
+
+  let sync db =
+    Internal.sync db
+
+  let destroy db =
+    Internal.destroy db
+
+  let mem db k =
+    Internal.mem db k
+
+  let add db k str =
+    Internal.add db k str
+
+  let replace db k str =
+    Internal.replace db k str
+
+  let remove db k =
+    Internal.remove db k
 
   let find db k =
     Internal.find db k
