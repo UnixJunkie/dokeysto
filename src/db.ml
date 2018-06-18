@@ -240,3 +240,45 @@ module RW = struct
     Internal.fold f db init
 
 end
+
+module RWZ = struct
+
+  type t
+
+  let create fn =
+    RW.create fn
+
+  let open_existing fn =
+    RW.open_existing fn
+
+  let close db =
+    RW.close db
+
+  let sync db =
+    RW.sync db
+
+  let destroy db =
+    RW.destroy db
+
+  let mem db k =
+    RW.mem db k
+
+  let add db k str =
+    Internal.add_z db k str
+
+  let replace db k str =
+    Internal.replace_z db k str
+
+  let remove db k =
+    RW.remove db k
+
+  let find db k =
+    Internal.find_z db k
+
+  let iter f db =
+    Internal.iter_z f db
+
+  let fold f db init =
+    Internal.fold_z f db init
+
+end
