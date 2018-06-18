@@ -3,25 +3,13 @@ module Ht = Hashtbl
 
 type filename = string
 
-let string_of_key (k: 'a): string =
-  Marshal.(to_string k [No_sharing])
-
-let string_of_value (v: 'b): string =
-  Marshal.(to_string v [No_sharing])
-
-let key_of_string (k_str: string): 'a =
-  (Marshal.from_string k_str 0: 'a)
-
-let value_of_string (v_str: string): 'b =
-  (Marshal.from_string v_str 0: 'b)
-
 type position = { off: int;
                   len: int }
 
 type db = { data_fn: filename;
             index_fn: filename;
             data: Unix.file_descr;
-            index: (string, position) Hashtbl.t }
+            index: (string, position) Ht.t }
 
 module Internal = struct
 
@@ -65,7 +53,7 @@ module Internal = struct
     Utls.save db.index_fn db.index
 
   let destroy db =
-    Hashtbl.reset db.index;
+    Ht.reset db.index;
     Unix.close db.data;
     Sys.remove db.data_fn;
     Sys.remove db.index_fn
