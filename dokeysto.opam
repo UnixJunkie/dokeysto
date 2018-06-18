@@ -10,6 +10,8 @@ build: ["jbuilder" "build" "-p" name "-j" jobs]
 build-test: [make "test"]
 depends: [
   "jbuilder" {build}
+  "base-bytes"
+  "base-unix"
   "extunix"
   "lz4"
 ]
