@@ -153,6 +153,8 @@ end
 
 module RO = struct
 
+  type t
+
   let open_existing fn =
     Internal.open_ro fn
 
@@ -173,7 +175,33 @@ module RO = struct
 
 end
 
+module ROZ = struct
+
+  type t
+
+  let open_existing fn =
+    RO.open_existing fn
+
+  let close db =
+    RO.close db
+
+  let mem db k =
+    RO.mem db k
+
+  let find db k =
+    Internal.find_z db k
+
+  let iter f db =
+    Internal.iter_z f db
+
+  let fold f db init =
+    Internal.fold_z f db init
+
+end
+
 module RW = struct
+
+  type t
 
   let create fn =
     Internal.create fn
