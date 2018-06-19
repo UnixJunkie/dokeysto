@@ -70,13 +70,33 @@ module Internal = struct
     Ht.add db.index k { off; len }
 
   let compress str =
-    Bytes.unsafe_to_string
-      (LZ4.Bytes.compress (Bytes.unsafe_of_string str))
+    (* LZ4 forces us to keep the length of the uncompressed string
+       so that we know it at decompression time *)
+    let n_str = string_of_int (String.length str) in
+    let n = String.length n_str in
+    let compressed = LZ4.Bytes.compress (Bytes.unsafe_of_string str) in
+    let m = Bytes.length compressed in
+    (* we write out: <uncompressed_length_str>:<compressed_data> *)
+    let final_length = n + 1 + m in
+    let bytes_res = Bytes.create final_length in
+    (* [0..n-1] *)
+    String.blit n_str 0 bytes_res 0 n;
+    (* [n] *)
+    Bytes.set bytes_res n ':';
+    (* [n+1..n+m] *)
+    Bytes.blit compressed 0 bytes_res (n + 1) m;
+    Bytes.unsafe_to_string bytes_res
 
   let uncompress str =
-    let len = String.length str in
-    Bytes.unsafe_to_string
-      (LZ4.Bytes.decompress ~length:len (Bytes.unsafe_of_string str))
+    (* first, read the uncompressed length prefix *)
+    let i = String.index str ':' in
+    let len = int_of_string (String.sub str 0 i) in
+    (* then, uncompress the rest *)
+    let n = String.length str in
+    let j = i + 1 in
+    let compressed = Bytes.create (n - j) in
+    Bytes.blit_string str j compressed 0 (n - j);
+    Bytes.unsafe_to_string (LZ4.Bytes.decompress ~length:len compressed)
 
   let add_z db k str =
     add db k (compress str)
