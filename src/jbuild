@@ -4,7 +4,7 @@
  ((name        dokeysto)
   (public_name dokeysto)
   (modules (db utls))
-  (libraries (unix extunix lz4))))
+  (libraries (unix extunix))))
 
 (executable
   ((name test)
