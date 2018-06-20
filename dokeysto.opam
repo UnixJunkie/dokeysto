@@ -13,5 +13,4 @@ depends: [
   "base-bytes"
   "base-unix"
   "extunix"
-  "lz4"
 ]
