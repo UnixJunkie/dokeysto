@@ -45,7 +45,7 @@ module Internal = struct
     { data_fn = "/dev/null";
       index_fn = "/dev/null.idx";
       data = Unix.(openfile "/dev/null" [O_RDWR] 0o600);
-      index = Ht.create 11 }
+      index = Ht.create 0 }
 
   let close_simple db =
     Unix.close db.data
