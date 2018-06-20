@@ -12,6 +12,10 @@ module RO: sig
       index is stored in [fn ^ ".idx"]. *)
   val open_existing: filename -> t
 
+  (** [dummy ()] create a value of type [t].
+      Do not do anything with this value. *)
+  val dummy: unit -> t
+
   (** [close db] close the previously opened [db]. *)
   val close: t -> unit
 
@@ -47,6 +51,10 @@ module RW: sig
       hashtbl whose data are stored in file [fn] and whose
       index is stored in [fn ^ ".idx"]. *)
   val open_existing: filename -> t
+
+  (** [dummy ()] create a value of type [t].
+      Do not do anything with this value. *)
+  val dummy: unit -> t
 
   (** [close db] close the previously opened [db]. *)
   val close: t -> unit

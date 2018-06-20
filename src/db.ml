@@ -41,6 +41,12 @@ module Internal = struct
     let index = Utls.restore index_fn in
     { data_fn; index_fn; data; index }
 
+  let dummy () =
+    { data_fn = "/dev/null";
+      index_fn = "/dev/null.idx";
+      data = Unix.(openfile "/dev/null" [O_RDWR] 0o600);
+      index = Ht.create 11 }
+
   let close_simple db =
     Unix.close db.data
 
@@ -114,6 +120,9 @@ module RO = struct
   let open_existing fn =
     Internal.open_ro fn
 
+  let dummy () =
+    Internal.dummy ()
+
   let close db =
     Internal.close_simple db
 
@@ -140,6 +149,9 @@ module RW = struct
 
   let open_existing fn =
     Internal.open_rw fn
+
+  let dummy () =
+    Internal.dummy ()
 
   let close db =
     Internal.close_sync_index db
