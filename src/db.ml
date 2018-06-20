@@ -69,14 +69,19 @@ module Internal = struct
     assert(written = len);
     Ht.add db.index k { off; len }
 
+  (* zlib-devel is more often installed/available than lz4... *)
+  let gzip = Cryptokit.Zlib.compress ~level:1 ()
+  let gunzip = Cryptokit.Zlib.uncompress ()    
+
   let compress str =
-    (* zlib-devel is more often installed than lz4... *)
-    Cryptokit.transform_string
-      (Cryptokit.Zlib.compress ~level:1 ()) str
+    gzip#put_string str;
+    gzip#flush;
+    gzip#get_string
 
   let uncompress str =
-    Cryptokit.transform_string
-      (Cryptokit.Zlib.uncompress ()) str
+    gunzip#put_string str;
+    gunzip#flush;
+    gunzip#get_string
 
   let add_z db k str =
     add db k (compress str)
