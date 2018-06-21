@@ -1,5 +1,8 @@
-
+ 
 type filename = string
+
+type position = { off: int;
+                  len: int }
 
 (** {4 Read-only persistent string key to string value hash table} *)
 
@@ -25,6 +28,11 @@ module RO: sig
   (** [find db k] get the current binding of [k] in [db]
       or raise [Not_found]. *)
   val find: t -> string -> string
+
+  (** [raw_read db pos] read from the data file of [db]
+      the string at position [pos].
+      WARNING: regular users should not need to call this function. *)
+  val raw_read: t -> position -> string
 
   (** [iter f db] apply [f] to all key-value pairs in [db].
       Cf. Hashtbl.iter for details. *)
@@ -84,6 +92,11 @@ module RW: sig
   (** [find db k] get the current binding of [k] in [db]
       or raise [Not_found]. *)
   val find: t -> string -> string
+
+  (** [raw_read db pos] read from the data file of [db]
+      the string at position [pos].
+      WARNING: regular users should not need to call this function. *)
+  val raw_read: t -> position -> string
 
   (** [iter f db] apply [f] to all key-value pairs in [db].
       Cf. Hashtbl.iter for details. *)
