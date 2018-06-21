@@ -4,7 +4,7 @@ build:
 	jbuilder build @install -j 16
 
 clean:
-	rm -rf _build doc/*
+	rm -rf _build doc/* *.install rwdb* *.idx src/.merlin
 
 edit:
 	emacs src/*.ml &
