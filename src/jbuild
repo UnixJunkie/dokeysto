@@ -10,3 +10,14 @@
   ((name test)
    (modules (test))
    (libraries (dokeysto))))
+
+(library
+ ((name        dokeysto_lz4)
+  (public_name dokeysto_lz4)
+  (modules (db_lz4))
+  (libraries (dokeysto lz4))))
+
+(executable
+  ((name test_lz4)
+   (modules (test_lz4))
+   (libraries (dokeysto_lz4))))
