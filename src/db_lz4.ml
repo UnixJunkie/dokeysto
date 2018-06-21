@@ -1,7 +1,4 @@
 
-module RO = Dokeysto.Db.RO
-module RW = Dokeysto.Db.RW
-
 type filename = string
 
 let compress str =
@@ -35,6 +32,8 @@ let uncompress str =
 
 module ROZ = struct
 
+  module RO = Dokeysto.Db.RO
+
   type t = RO.t
 
   let open_existing fn =
@@ -62,6 +61,8 @@ module ROZ = struct
 end
 
 module RWZ = struct
+
+  module RW = Dokeysto.Db.RW
 
   type t = RW.t
 
