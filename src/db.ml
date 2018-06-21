@@ -87,9 +87,9 @@ module Internal = struct
     (* we just remove it from the index, not from the data file *)
     Ht.remove db.index k
 
-  let retrieve db v_addr =
-    let off = v_addr.off in
-    let len = v_addr.len in
+  let raw_read db pos =
+    let off = pos.off in
+    let len = pos.len in
     let buff = Bytes.create len in
     let off' = Unix.(lseek db.data off SEEK_SET) in
     assert(off' = off);
@@ -99,16 +99,16 @@ module Internal = struct
 
   let find db k =
     let v_addr = Ht.find db.index k in
-    retrieve db v_addr
+    raw_read db v_addr
 
   let iter f db =
     Ht.iter (fun k v ->
-        f k (retrieve db v)
+        f k (raw_read db v)
       ) db.index
 
   let fold f db init =
     Ht.fold (fun k v acc ->
-        f k (retrieve db v) acc
+        f k (raw_read db v) acc
       ) db.index init
 
 end
@@ -131,6 +131,9 @@ module RO = struct
 
   let find db k =
     Internal.find db k
+
+  let raw_read db pos =
+    Internal.raw_read db pos
 
   let iter f db =
     Internal.iter f db
@@ -176,6 +179,9 @@ module RW = struct
 
   let find db k =
     Internal.find db k
+
+  let raw_read db pos =
+    Internal.raw_read db pos
 
   let iter f db =
     Internal.iter f db
