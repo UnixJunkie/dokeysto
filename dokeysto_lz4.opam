@@ -10,9 +10,6 @@ build: ["jbuilder" "build" "-p" name "-j" jobs]
 build-test: [make "test_lz4"]
 depends: [
   "jbuilder" {build}
-  "base-bytes"
-  "base-unix"
-  "extunix"
   "dokeysto"
   "lz4"
 ]
