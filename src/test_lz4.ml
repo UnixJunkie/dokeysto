@@ -1,14 +1,13 @@
 open Printf
 
-module Rwdbz = Dokeysto_lz4.Db_lz4.RWZ
-module Rodbz = Dokeysto_lz4.Db_lz4.ROZ
-
 let n = 1_000_000
 
 (* RWDBZ *)
+module Rwdbz = Dokeysto_lz4.Db_lz4.RWZ
+
 let test_rwdbz () =
   let start = Unix.gettimeofday () in
-  let rwz = Rwdbz.create "rwdbz" in
+  let rwz = Rwdbz.create "rwdb_lz4" in
   for i = 1 to n do
     let s = string_of_int i in
     Rwdbz.add rwz s s
@@ -23,12 +22,14 @@ let test_rwdbz () =
   done;
   let stop' = Unix.gettimeofday () in
   printf "RWZ records find rate: %.2f/s\n%!" (float n /. (stop' -. start'));
-  let _ = Sys.command "ls -lh rwdbz rwdbz.idx" in
+  let _ = Sys.command "ls -lh rwdb_lz4 rwdb_lz4.idx" in
   Rwdbz.close rwz
 
 (* RODBZ *)
+module Rodbz = Dokeysto_lz4.Db_lz4.ROZ
+                 
 let test_rodbz () =
-  let roz = Rodbz.open_existing "rwdbz" in
+  let roz = Rodbz.open_existing "rwdb_lz4" in
   let start''' = Unix.gettimeofday () in
   for i = 1 to n do
     let s = string_of_int i in
