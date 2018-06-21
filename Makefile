@@ -1,4 +1,4 @@
-.PHONY: build install uninstall reinstall doc test
+.PHONY: build clean install uninstall reinstall doc test test_lz4
 
 build:
 	jbuilder build @install -j 16
