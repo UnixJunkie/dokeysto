@@ -21,3 +21,10 @@
   ((name test_lz4)
    (modules (test_lz4))
    (libraries (dokeysto_lz4))))
+
+(executable
+ ((name dokeysto_cli)
+  (public_name dokeysto_cli)
+  (package dokeysto_lz4)
+  (modules (dokeysto_cli))
+  (libraries (dokeysto_lz4 dolog minicli))))
