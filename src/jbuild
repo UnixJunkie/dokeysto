@@ -17,6 +17,12 @@
   (modules (db_lz4))
   (libraries (dokeysto lz4))))
 
+(library
+ ((name        dokeysto_camltc)
+  (public_name dokeysto_camltc)
+  (modules (db_camltc))
+  (libraries (dokeysto camltc))))
+
 (executable
   ((name test_lz4)
    (modules (test_lz4))
