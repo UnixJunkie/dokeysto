@@ -102,9 +102,9 @@ module RO = struct
     { fn; bdb }
 
   let dummy () =
-    (* FBR: not sure this will work *)
-    let dummy_fn = Filename.temp_file "" "" in
-    open_existing dummy_fn
+    let db = RW.dummy () in
+    RW.close db;
+    open_existing db.fn
 
   let close db =
     Internal.close db
