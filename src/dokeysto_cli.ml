@@ -1,6 +1,7 @@
 
 open Printf
 
+module CLI = Minicli.CLI
 module Rodb = Dokeysto.Db.RO
 
 let main () =
