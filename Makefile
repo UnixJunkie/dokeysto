@@ -1,7 +1,7 @@
 .PHONY: build clean install uninstall reinstall doc test test_lz4 test_camltc
 
 build:
-	jbuilder build @install -j 16
+	dune build @install -j 16
 
 clean:
 	rm -rf _build doc/* *.install rwdb* *.idx src/.merlin
@@ -10,10 +10,10 @@ edit:
 	emacs src/*.ml &
 
 install: build
-	jbuilder install
+	dune install
 
 uninstall:
-	jubilder uninstall
+	dune uninstall
 
 reinstall: uninstall install
 
@@ -23,15 +23,15 @@ doc:
 
 test:
 	\rm -f rwdb rwdb.idx
-	jbuilder build _build/default/src/test.exe
+	dune build _build/default/src/test.exe
 	_build/default/src/test.exe
 
 test_lz4:
 	\rm -f rwdb_lz4 rwdb_lz4.idx
-	jbuilder build _build/default/src/test_lz4.exe
+	dune build _build/default/src/test_lz4.exe
 	_build/default/src/test_lz4.exe
 
 test_camltc:
 	\rm -f rwdb_camltc rwdb_camltc.idx
-	jbuilder build _build/default/src/test_camltc.exe
+	dune build _build/default/src/test_camltc.exe
 	_build/default/src/test_camltc.exe
