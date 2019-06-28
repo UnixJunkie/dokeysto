@@ -1,6 +1,4 @@
 
-type filename = string
-
 let compress str =
   (* LZ4 forces us to keep the length of the uncompressed string
      so that we know it at decompression time *)
