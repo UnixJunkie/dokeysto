@@ -16,7 +16,6 @@ depends: [
   "base-bytes"
   "base-unix"
   "extunix"
-  "dolog"
   "minicli"
 ]
 synopsis: "The dumb OCaml key-value store"
