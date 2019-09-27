@@ -36,4 +36,4 @@
  (public_name dokeysto_cli)
  (package dokeysto_lz4)
  (modules dokeysto_cli)
- (libraries dokeysto_lz4 dolog minicli))
+ (libraries dokeysto_lz4 minicli))
