@@ -1,8 +1,7 @@
- 
-type filename = string
 
-type position = { off: int;
-                  len: int }
+type filename = Common.filename
+
+type position = Common.position
 
 (** {4 Read-only persistent string key to string value hash table} *)
 

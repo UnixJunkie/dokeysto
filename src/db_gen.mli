@@ -1,9 +1,17 @@
- 
-type filename = string
+
+type filename = Common.filename
+
+module type Key_val = sig
+  val string_of_key: 'a -> string
+  val key_of_string: string -> 'a
+
+  val string_of_value: 'b -> string
+  val value_of_string: string -> 'b
+end
 
 (** {4 Read-only persistent generic key to generic value hash table} *)
 
-module RO: sig
+module RO: functor (KV: Key_val) -> sig
 
   type t
 
@@ -38,7 +46,7 @@ end
 
 (** {4 Read-write persistent generic key to generic value hash table} *)
 
-module RW: sig
+module RW: functor (KV: Key_val) -> sig
 
   type t
 

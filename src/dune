@@ -1,7 +1,7 @@
 (library
  (name dokeysto)
  (public_name dokeysto)
- (modules db utls)
+ (modules db common internal db_gen utls)
  (libraries unix extunix))
 
 (executable
