@@ -39,7 +39,7 @@ module RO: sig
 
   (** [fold f db init] fold [f] over all key-value pairs in [db].
       Cf. Hashtbl.fold for details. *)
-  val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
+  val fold: (string -> string -> 'acc -> 'acc) -> t -> 'acc -> 'acc
 
 end
 
@@ -103,6 +103,6 @@ module RW: sig
 
   (** [fold f db init] fold [f] over all key-value pairs in [db].
       Cf. Hashtbl.fold for details. *)
-  val fold: (string -> string -> 'a -> 'a) -> t -> 'a -> 'a
+  val fold: (string -> string -> 'acc -> 'acc) -> t -> 'acc -> 'acc
 
 end
