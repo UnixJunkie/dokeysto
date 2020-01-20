@@ -1,25 +1,26 @@
+
 (library
  (name dokeysto)
  (public_name dokeysto)
  (modules db common internal db_gen utls)
  (libraries unix extunix))
 
-(executable
- (name test)
- (modules test)
- (libraries dokeysto))
-
 (library
  (name dokeysto_lz4)
  (public_name dokeysto_lz4)
- (modules db_lz4)
+ (modules db_lz4 db_lz4_gen)
  (libraries dokeysto lz4))
 
 (library
  (name dokeysto_camltc)
  (public_name dokeysto_camltc)
- (modules db_camltc)
+ (modules internal_camltc db_camltc db_camltc_gen)
  (libraries dokeysto logs camltc))
+
+(executable
+ (name test)
+ (modules test)
+ (libraries dokeysto))
 
 (executable
  (name test_lz4)

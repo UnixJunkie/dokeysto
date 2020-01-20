@@ -4,9 +4,7 @@
 
 type filename = string
 
-module type Key_val = Dokeysto.Db_gen.Key_val
-
-module RO: functor (KV: Key_val) -> sig
+module RO: functor (KV: Dokeysto.Db_gen.Key_val) -> sig
 
   type t
 
@@ -42,7 +40,7 @@ end
 (** {4 Read-write persistent generic key to generic value hash table
        using tokyocabinet as backend.} *)
 
-module RW: functor (KV: Key_val) -> sig
+module RW: functor (KV: Dokeysto.Db_gen.Key_val) -> sig
 
   type t
 
