@@ -2,9 +2,8 @@ open Printf
 
 let n = 1_000_000
 
-module Rwdb = Dokeysto_camltc.Db_camltc.RW
-
 let test_rwdb () =
+  let module Rwdb = Dokeysto_camltc.Db_camltc.RW in
   let start = Unix.gettimeofday () in
   let rw = Rwdb.create "rwdb_camltc" in
   for i = 1 to n do
@@ -40,9 +39,8 @@ let test_rwdb () =
   let _ = Sys.command "ls -lh rwdb_camltc" in
   Rwdb.close rw
 
-module Rwdb_gen = Dokeysto_camltc.Db_camltc_gen.RW (Dokeysto.Gen_gen)
-
 let test_rwdb_gen () =
+  let module Rwdb_gen = Dokeysto_camltc.Db_camltc_gen.RW (Dokeysto.Gen_gen) in
   let start = Unix.gettimeofday () in
   let rw = Rwdb_gen.create "rwdb_camltc_gen" in
   for i = 1 to n do
@@ -75,9 +73,8 @@ let test_rwdb_gen () =
   let _ = Sys.command "ls -lh rwdb_camltc_gen" in
   Rwdb_gen.close rw
 
-module Rodb = Dokeysto_camltc.Db_camltc.RO
-
 let test_rodb () =
+  let module Rodb = Dokeysto_camltc.Db_camltc.RO in
   let ro = Rodb.open_existing "rwdb_camltc" in
   let start''' = Unix.gettimeofday () in
   let count = ref 0 in
@@ -91,9 +88,8 @@ let test_rodb () =
   printf "RO records find rate: %.2f/s\n%!" (float n /. (stop''' -. start'''));
   Rodb.close ro
 
-module Rodb_gen = Dokeysto_camltc.Db_camltc_gen.RO (Dokeysto.Gen_gen)
-
 let test_rodb_gen () =
+  let module Rodb_gen = Dokeysto_camltc.Db_camltc_gen.RO (Dokeysto.Gen_gen) in
   let ro = Rodb_gen.open_existing "rwdb_camltc_gen" in
   let start''' = Unix.gettimeofday () in
   let count = ref 0 in
@@ -107,6 +103,8 @@ let test_rodb_gen () =
   Rodb_gen.close ro
 
 let () =
+  let module Rwdb = Dokeysto_camltc.Db_camltc.RW in
+  let module Rodb = Dokeysto_camltc.Db_camltc.RO in
   test_rwdb ();
   test_rwdb_gen ();
   test_rodb ();
