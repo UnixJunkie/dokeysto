@@ -2,22 +2,22 @@
 (* values are LZ4-compressed marshaled-to-string values
    i.e. at encoding time we first marshal to string then LZ4 compress the
    marshaled value *)
-module Key_LZ4val = struct
 
-  let string_of_key (k: 'k): string =
-    Marshal.(to_string k [No_sharing])
+(* just add compression/decompression of the values of the KV module *)
+module KZV (KV: Dokeysto.Db_gen.Key_val) = struct
+  
+  let string_of_key = KV.string_of_key
 
-  let key_of_string (s: string): 'k =
-    Marshal.from_string s 0
+  let key_of_string = KV.key_of_string
 
   let string_of_value (v: 'v): string =
-    Db_lz4.compress (Marshal.(to_string v [No_sharing]))
+    Db_lz4.compress (KV.string_of_value v)
 
   let value_of_string (s: string): 'v =
-    Marshal.from_string (Db_lz4.uncompress s) 0
+    KV.value_of_string (Db_lz4.uncompress s)
 
 end
 
-module ROZ = Dokeysto.Db_gen.RO (Key_LZ4val)
+module ROZ (KV: Dokeysto.Db_gen.Key_val) = Dokeysto.Db_gen.RO (KZV (KV))
 
-module RWZ = Dokeysto.Db_gen.RW (Key_LZ4val)
+module RWZ (KV: Dokeysto.Db_gen.Key_val) = Dokeysto.Db_gen.RW (KZV (KV))

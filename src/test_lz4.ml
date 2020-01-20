@@ -25,7 +25,7 @@ let test_rwdbz () =
   Rwdbz.close rwz
 
 let test_rwdbz_gen () =
-  let module Rwdbz_gen = Dokeysto_lz4.Db_lz4_gen.RWZ in
+  let module Rwdbz_gen = Dokeysto_lz4.Db_lz4_gen.RWZ (Dokeysto.Gen_gen) in
   let start = Unix.gettimeofday () in
   let rwz = Rwdbz_gen.create "rwdb_lz4_gen" in
   for i = 1 to n do
@@ -56,7 +56,7 @@ let test_rodbz () =
   printf "ROZ records find rate: %.2f/s\n%!" (float n /. (stop''' -. start'''))
 
 let test_rodbz_gen () =
-  let module Rodbz_gen = Dokeysto_lz4.Db_lz4_gen.ROZ in
+  let module Rodbz_gen = Dokeysto_lz4.Db_lz4_gen.ROZ (Dokeysto.Gen_gen) in
   let roz = Rodbz_gen.open_existing "rwdb_lz4_gen" in
   let start''' = Unix.gettimeofday () in
   for i = 1 to n do
