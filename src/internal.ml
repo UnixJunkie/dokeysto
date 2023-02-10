@@ -12,10 +12,10 @@ let create fn =
   let data_fn = fn in
   let index_fn = fn ^ ".idx" in
   let data =
-    Unix.(openfile data_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    Unix.(openfile data_fn [O_RDWR; O_CREAT; O_TRUNC] 0o600) in
   (* we just check there is not already an index file *)
   let index_file =
-    Unix.(openfile index_fn [O_RDWR; O_CREAT; O_EXCL] 0o600) in
+    Unix.(openfile index_fn [O_RDWR; O_CREAT; O_TRUNC] 0o600) in
   Unix.close index_file;
   let index = Ht.create 11 in
   { data_fn; index_fn; data; index }
