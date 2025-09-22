@@ -96,6 +96,16 @@ let remove db k =
   (* we just remove it from the index, not from the data file *)
   Ht.remove db.index k
 
+(* Unix.read is too low-level and dangerous *)
+let really_read fd buf ofs len =
+  (* a generic library would need the assert *)
+  (* assert(len <= Bytes.length buf); *)
+  let read = ref (Unix.read fd buf ofs len) in
+  while !read < len do
+    read := !read + Unix.read fd buf (ofs + !read) (len - !read)
+  done;
+  !read
+
 let raw_read db pos =
   let off = pos.off in
   let len = pos.len in
@@ -108,7 +118,8 @@ let raw_read db pos =
           db.data_fn off len off' in
       failwith err_msg
   end;
-  let read = Unix.read db.data buff 0 len in
+  (* No Unix.read here !!! *)
+  let read = really_read db.data buff 0 len in
   begin
     if read <> len then
       let err_msg =
